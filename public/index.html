@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Velvet Nova</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#08060d; --bg2:#0d0a16; --panel:#161020; --border:#2a1f3d;
+  --text:#ece7f5; --muted:#968fae; --accent1:#a855f7; --accent2:#d946a8;
+  --amber:#e0a72e;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;height:100vh;overflow:hidden}
+.serif{font-family:'Playfair Display',Georgia,serif}
+#app{display:flex;flex-direction:column;height:100vh}
+header{padding:16px 20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,var(--bg2),var(--bg))}
+.pill{padding:7px 14px;border-radius:999px;border:1px solid var(--border);background:#171126;color:var(--muted);font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.pill.active{border-color:var(--amber);color:var(--amber);background:rgba(224,167,46,.12)}
+.spacer{flex:1}
+.brand{font-weight:700;font-size:16px;letter-spacing:.02em;background:linear-gradient(90deg,var(--accent2),var(--accent1));-webkit-background-clip:text;background-clip:text;color:transparent}
+.brandmark{width:28px;height:28px;border-radius:8px;overflow:hidden;flex:0 0 auto}
+.brandmark img{width:100%;height:100%;object-fit:cover;object-position:top}
+nav{display:flex;gap:6px;overflow-x:auto;padding:10px 16px;border-bottom:1px solid var(--border);background:var(--bg2)}
+.tab{flex:0 0 auto;padding:8px 14px;border-radius:10px;font-size:13px;color:var(--muted);cursor:pointer;border:1px solid transparent;white-space:nowrap}
+.tab.active{background:linear-gradient(135deg,rgba(168,85,247,.25),rgba(217,70,168,.15));color:var(--text);border-color:var(--accent1)}
+.tab.soon{opacity:.5}
+main{flex:1;overflow-y:auto;padding:24px 16px 12px;display:flex;flex-direction:column;align-items:center}
+.hero{text-align:center;margin-top:5vh;max-width:640px}
+.logo{width:96px;height:96px;border-radius:20px;margin:0 auto 18px;overflow:hidden;box-shadow:0 0 40px rgba(168,85,247,.35)}
+.logo img{width:100%;height:100%;object-fit:cover;object-position:top}
+.hero h1{font-size:34px;letter-spacing:.03em;margin:0 0 8px;background:linear-gradient(90deg,var(--accent2),var(--accent1));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--muted);margin:0 0 20px;font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+.suggestions{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:560px}
+@media(max-width:520px){.suggestions{grid-template-columns:1fr}}
+.sug{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:14px 16px;text-align:left;cursor:pointer;color:var(--text);font-size:13.5px}
+.sug:hover{border-color:var(--accent1)}
+.note{color:var(--muted);font-size:12px;margin-top:18px;max-width:520px}
+.chat{width:100%;max-width:720px;display:flex;flex-direction:column;gap:14px;padding-bottom:10px}
+.msg{max-width:82%;padding:12px 15px;border-radius:14px;font-size:14.5px;line-height:1.5;white-space:pre-wrap}
+.msg.user{align-self:flex-end;background:linear-gradient(135deg,var(--accent1),#7c3aed);color:#fff;border-bottom-right-radius:4px}
+.msg.ai{align-self:flex-start;background:var(--panel);border:1px solid var(--border);border-bottom-left-radius:4px}
+.msg.ai.pending{color:var(--muted)}
+.msg .fname{display:block;font-size:11px;opacity:.75;margin-bottom:4px}
+footer{padding:10px 16px 16px;border-top:1px solid var(--border);background:var(--bg2)}
+.filechip{max-width:720px;margin:0 auto 8px;display:none;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:6px 10px;font-size:12.5px;color:var(--muted);width:fit-content}
+.filechip button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px}
+.inputbar{max-width:720px;margin:0 auto;display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:6px 8px 6px 12px}
+.inputbar input{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-size:14.5px;padding:10px 0}
+.iconbtn{width:36px;height:36px;border-radius:10px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-size:16px}
+.send{width:38px;height:38px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--accent1),var(--accent2));color:#fff;cursor:pointer;font-size:16px}
+.send:disabled{opacity:.5}
+.foot-note{text-align:center;color:var(--muted);font-size:11px;margin-top:6px}
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="brandmark"><img src="/logo.png" alt="Velvet Nova"></div>
+    <div class="brand serif">Velvet Nova</div>
+    <div id="personas" style="display:flex;gap:8px"></div>
+    <div class="spacer"></div>
+    <div class="pill" id="clearBtn" title="Clear this device's history">🗑 Clear</div>
+  </header>
+  <nav id="tabs"></nav>
+  <main id="main">
+    <div class="hero" id="hero">
+      <div class="logo"><img src="/logo.png" alt="Velvet Nova"></div>
+      <h1 class="serif">Velvet Nova</h1>
+      <p id="heroSub">Chat, create, search, analyze — all in one place</p>
+      <div class="suggestions" id="sugs"></div>
+      <div class="note" id="modeNote"></div>
+    </div>
+    <div class="chat" id="chat" style="display:none"></div>
+  </main>
+  <footer>
+    <div class="filechip" id="fileChip"></div>
+    <div class="inputbar">
+      <button class="iconbtn" id="attachBtn" title="Attach a text file">📎</button>
+      <input id="inp" placeholder="Ask me anything…" />
+      <button class="send" id="sendBtn">➤</button>
+    </div>
+    <input type="file" id="fileInput" accept=".txt,.md,.csv,.json,.log" style="display:none">
+    <div class="foot-note">Velvet Nova can make mistakes. Verify important information.</div>
+  </footer>
+</div>
+<script>
+const PERSONAS = {
+  creative: {label:"Creative", icon:"✨", style:"Be imaginative, vivid, and playful. Offer bold, original ideas — where useful, sketch more than one direction."},
+  precise:  {label:"Precise",  icon:"◎", style:"Be exact, structured, and rigorous. If the request is ambiguous, ask one sharp clarifying question before answering fully."},
+  casual:   {label:"Casual",   icon:"☕", style:"Be warm, relaxed, and conversational, like chatting with a friend."}
+};
+const MODES = {
+  chat:      {label:"💬 Chat",      accent:"#d946a8", sys:"You are Velvet Nova, a helpful all-purpose AI assistant."},
+  search:    {label:"🔍 Search",    accent:"#c026d3", sys:"You are Velvet Nova in Search mode. You have no live web access — briefly note that up front, then answer from general knowledge."},
+  analyze:   {label:"📄 Analyze",   accent:"#8b5cf6", sys:"You are Velvet Nova in Analyze mode. If a file is attached, analyze its actual content with structured insight."},
+  design:    {label:"🎨 Design",    accent:"#e879f9", sys:"You are Velvet Nova in Design mode. Describe designs precisely in words — this build can't generate images directly."},
+  code:      {label:"</> Code",     accent:"#a78bfa", sys:"You are Velvet Nova in Code mode. Write clean, correct, well-commented code and briefly explain it."},
+  translate: {label:"🌐 Translate", accent:"#f472b6", sys:"You are Velvet Nova in Translate mode. Translate accurately, noting tone/register choices when relevant."},
+  summarize: {label:"📝 Summarize", accent:"#c084fc", sys:"You are Velvet Nova in Summarize mode. If a file is attached, summarize its actual content faithfully."},
+  image:     {label:"🖼️ Image (soon)", soon:true},
+  video:     {label:"🎬 Video (soon)", soon:true},
+  music:     {label:"🎵 Music (soon)", soon:true}
+};
+const SUGS = {
+  chat:["Explain quantum computing simply","Help me brainstorm a startup name"],
+  search:["Latest trends in AI technology","Compare two approaches to X"],
+  analyze:["Attach a file, then ask me to find patterns","Break down the pros/cons of a decision"],
+  design:["Design a landing page for my startup","Describe a cyberpunk city interface"],
+  code:["Write a Python script to parse CSV","Debug this function for me"],
+  translate:["Translate a paragraph to Spanish","Check my French email's tone"],
+  summarize:["Attach a document, then ask for a summary","Condense my notes into bullet points"]
+};
+
+let persona="casual", mode="chat", history=[], attachedFile=null;
+const STORAGE_KEY="velvetNovaHistory";
+
+try{ history = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); }catch(e){ history=[]; }
+
+function applyModeColor(){ const m=MODES[mode]; if(m.accent) document.documentElement.style.setProperty("--accent2", m.accent); }
+
+function render(){
+  document.getElementById("personas").innerHTML = Object.entries(PERSONAS).map(([k,p])=>
+    `<div class="pill ${k===persona?'active':''}" data-p="${k}">${p.icon} ${p.label}</div>`).join("");
+  document.getElementById("tabs").innerHTML = Object.entries(MODES).map(([k,m])=>
+    `<div class="tab ${k===mode?'active':''} ${m.soon?'soon':''}" data-m="${k}">${m.label}</div>`).join("");
+  const m = MODES[mode];
+  if(!m.soon){
+    document.getElementById("sugs").innerHTML = SUGS[mode].map(s=>`<div class="sug" data-s="${s}">${s}</div>`).join("");
+    document.getElementById("modeNote").textContent = (mode==="design"||mode==="search") ? "Note: image/live-web results aren't available in this build — responses are text-based." : "";
+    document.getElementById("inp").disabled=false;
+  } else {
+    document.getElementById("sugs").innerHTML="";
+    document.getElementById("modeNote").textContent="This mode needs a connected generation API (not wired up yet). Try Chat, Design, or Code instead.";
+  }
+  applyModeColor();
+  document.querySelectorAll("[data-p]").forEach(el=>el.onclick=()=>{persona=el.dataset.p;render();});
+  document.querySelectorAll("[data-m]").forEach(el=>el.onclick=()=>{mode=el.dataset.m;render();});
+  document.querySelectorAll("[data-s]").forEach(el=>el.onclick=()=>{document.getElementById("inp").value=el.dataset.s;send();});
+}
+render();
+
+function addMsg(role,text,fname){
+  document.getElementById("hero").style.display="none";
+  const chat=document.getElementById("chat");
+  chat.style.display="flex";
+  const div=document.createElement("div");
+  div.className="msg "+role;
+  if(fname){ const s=document.createElement("span"); s.className="fname"; s.textContent="📎 "+fname; div.appendChild(s); }
+  const t=document.createElement("span"); t.textContent=text;
+  div.appendChild(t);
+  chat.appendChild(div);
+  document.getElementById("main").scrollTop=document.getElementById("main").scrollHeight;
+  return {div,textNode:t};
+}
+function renderHistory(){
+  document.getElementById("chat").innerHTML="";
+  if(!history.length) return;
+  document.getElementById("hero").style.display="none";
+  document.getElementById("chat").style.display="flex";
+  history.forEach(h=>addMsg(h.role, h.content, h.file));
+}
+renderHistory();
+
+document.getElementById("clearBtn").onclick=()=>{
+  history=[]; localStorage.removeItem(STORAGE_KEY);
+  document.getElementById("chat").innerHTML=""; document.getElementById("chat").style.display="none";
+  document.getElementById("hero").style.display="block";
+};
+
+document.getElementById("attachBtn").onclick=()=>document.getElementById("fileInput").click();
+document.getElementById("fileInput").addEventListener("change",e=>{
+  const f=e.target.files[0];
+  if(!f) return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    attachedFile={name:f.name, text:String(reader.result).slice(0,12000)};
+    const chip=document.getElementById("fileChip");
+    chip.style.display="flex";
+    chip.innerHTML=`📎 ${f.name} <button id="removeFile">✕</button>`;
+    document.getElementById("removeFile").onclick=()=>{attachedFile=null;chip.style.display="none";chip.innerHTML="";};
+  };
+  reader.readAsText(f);
+});
+
+async function send(){
+  const inp=document.getElementById("inp");
+  const text=inp.value.trim();
+  if(!text) return;
+  inp.value="";
+  document.getElementById("sendBtn").disabled=true;
+  const file=attachedFile;
+  addMsg("user",text,file?file.name:null);
+  history.push({role:"user",content:text,file:file?file.name:null});
+  const pending=addMsg("ai","Thinking…");
+  pending.div.classList.add("pending");
+  try{
+    const sys = MODES[mode].sys + " Tone: " + PERSONAS[persona].style;
+    const turns = history.slice(0,-1).map(h=>({role:h.role,content:h.content}));
+    let currentContent = sys + "\n\n";
+    if(file) currentContent += `Attached file "${file.name}":\n---\n${file.text}\n---\n\n`;
+    currentContent += text;
+    turns.push({role:"user", content: currentContent});
+
+    const resp = await fetch("/api/chat", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ messages: turns })
+    });
+    const data = await resp.json();
+    if(!resp.ok) throw new Error(data.error || "Request failed");
+
+    pending.textNode.textContent = data.text;
+    pending.div.classList.remove("pending");
+    history.push({role:"assistant",content:data.text});
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+  }catch(e){
+    pending.textNode.textContent = "Something went wrong: " + e.message;
+    pending.div.classList.remove("pending");
+  }
+  attachedFile=null;
+  const chip=document.getElementById("fileChip");
+  chip.style.display="none"; chip.innerHTML="";
+  document.getElementById("sendBtn").disabled=false;
+}
+document.getElementById("sendBtn").onclick=send;
+document.getElementById("inp").addEventListener("keydown",e=>{if(e.key==="Enter")send();});
+</script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "name": "velvet-nova",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Velvet Nova - AI assistant web app",
+  "scripts": {
+    "dev": "vercel dev"
+  }
+}
