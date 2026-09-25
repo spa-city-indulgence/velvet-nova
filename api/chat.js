@@ -24,7 +24,7 @@ export default async function handler(req, res) {
     parts: [{ text: m.content }]
   }));
 
-  const model = "gemini-2.5-flash"; // stable, free-tier eligible
+  const model = "gemini-3.8-flash"; // current Gemini Flash model
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
   try {
